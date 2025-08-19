@@ -1,8 +1,3 @@
-"use client"
-
-import { useEffect, useState } from "react"
-import { useParams } from "next/navigation"
-
 import type { DesignRequest } from "@/types"
 
 const mockRequests: Record<string, DesignRequest> = {
@@ -32,54 +27,43 @@ const mockRequests: Record<string, DesignRequest> = {
   },
 }
 
-async function fetchRequest(id: string): Promise<DesignRequest> {
-  await new Promise((resolve) => setTimeout(resolve, 300))
-  const request = mockRequests[id]
-  if (!request) {
-    throw new Error("Request not found")
-  }
-  return request
-}
-
-export default function RequestPage() {
-  const { id } = useParams<{ id: string }>()
-  const [request, setRequest] = useState<DesignRequest | null>(null)
-  const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    fetchRequest(id)
-      .then(setRequest)
-      .catch((err: Error) => setError(err.message))
-      .finally(() => setLoading(false))
-  }, [id])
-
-  if (loading) {
-    return <div className="p-4">Loading...</div>
+export default async function RequestPage({
+  params,
+}: {
+  params: { id: string }
+}) {
+  async function fetchRequest(id: string): Promise<DesignRequest> {
+    await new Promise((resolve) => setTimeout(resolve, 300))
+    const request = mockRequests[id]
+    if (!request) {
+      throw new Error("Request not found")
+    }
+    return request
   }
 
-  if (error) {
-    return <div className="p-4 text-red-500">{error}</div>
-  }
-
-  if (!request) {
-    return <div className="p-4">No request found.</div>
-  }
-
-  return (
-    <div className="p-6 space-y-4">
-      <div>
-        <h1 className="text-2xl font-bold">{request.title}</h1>
-        <p className="text-sm text-muted-foreground">ID: {request.id}</p>
+  try {
+    const request = await fetchRequest(params.id)
+    return (
+      <div className="p-6 space-y-4">
+        <div>
+          <h1 className="text-2xl font-bold">{request.title}</h1>
+          <p className="text-sm text-muted-foreground">ID: {request.id}</p>
+        </div>
+        <p className="text-muted-foreground">{request.description}</p>
+        <div className="text-sm text-muted-foreground space-y-1">
+          <p>Category: {request.category}</p>
+          <p>Priority: {request.priority}</p>
+          <p>Status: {request.status}</p>
+          <p>Deadline: {new Date(request.deadline).toLocaleDateString()}</p>
+        </div>
       </div>
-      <p className="text-muted-foreground">{request.description}</p>
-      <div className="text-sm text-muted-foreground space-y-1">
-        <p>Category: {request.category}</p>
-        <p>Priority: {request.priority}</p>
-        <p>Status: {request.status}</p>
-        <p>Deadline: {new Date(request.deadline).toLocaleDateString()}</p>
+    )
+  } catch (err) {
+    return (
+      <div className="p-4 text-red-500">
+        {(err as Error).message || "No request found."}
       </div>
-    </div>
-  )
+    )
+  }
 }
 
