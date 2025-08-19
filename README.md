@@ -1,8 +1,34 @@
 # felks-client-portal
 
-[Edit in StackBlitz next generation editor ⚡️](https://stackblitz.com/~/github.com/fehleques/felks-client-portal)
+## Getting Started
 
-## Continuous Integration
+1. **Install dependencies**
 
-Run `npm run lint` to ensure code passes ESLint. This command should be included in CI workflows to catch lint errors before deployment.
+   ```bash
+   npm install
+   ```
+
+2. **Run the development server**
+
+   ```bash
+   npm run dev
+   ```
+
+3. **Run the test suite**
+
+   ```bash
+   npm test
+   ```
+
+4. **Create a production build**
+
+   ```bash
+   npm run build
+   ```
+
+## Contributing
+
+- Run `npm run lint` before committing to catch ESLint issues.
+- Tests are executed with Jest and React Testing Library.
+- Dependency versions are pinned in `package.json` and `package-lock.json` to avoid conflicts.
 
