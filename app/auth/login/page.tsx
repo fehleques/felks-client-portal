@@ -40,18 +40,27 @@ export default function LoginPage() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true)
-    
-    // Mock login process
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
-    toast({
-      title: "Login successful",
-      description: "Welcome back to Design Studio!",
-    })
-    
-    // In a real app, this would authenticate the user and redirect to dashboard
-    router.push("/client/dashboard")
-    setIsLoading(false)
+
+    try {
+      // Mock login process
+      await new Promise(resolve => setTimeout(resolve, 1000))
+
+      toast({
+        title: "Login successful",
+        description: "Welcome back to Design Studio!",
+      })
+
+      // In a real app, this would authenticate the user and redirect to dashboard
+      router.push("/client/dashboard")
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Login failed",
+        description: "Something went wrong, please try again.",
+      })
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -112,7 +121,7 @@ export default function LoginPage() {
           </Form>
           <div className="text-center">
             <p className="text-sm text-muted-foreground">
-              Don't have an account?{" "}
+              Don&apos;t have an account?{" "}
               <Link href="/auth/signup" className="underline underline-offset-2 hover:text-foreground">
                 Sign up
               </Link>
