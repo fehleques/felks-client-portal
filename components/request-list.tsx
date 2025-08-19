@@ -1,3 +1,5 @@
+"use client"
+
 import Link from "next/link"
 import { format, isAfter } from "date-fns"
 import { Badge } from "@/components/ui/badge"
