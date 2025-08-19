@@ -32,13 +32,17 @@ const mockRequests: Record<string, DesignRequest> = {
   },
 }
 
-async function fetchRequest(id: string): Promise<DesignRequest> {
+export async function fetchRequest(id: string): Promise<DesignRequest> {
   await new Promise((resolve) => setTimeout(resolve, 300))
   const request = mockRequests[id]
   if (!request) {
     throw new Error("Request not found")
   }
   return request
+}
+
+function RequestError({ message }: { message: string }) {
+  return <div className="p-4 text-red-500">{message}</div>
 }
 
 export default function RequestPage() {
@@ -48,10 +52,19 @@ export default function RequestPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetchRequest(id)
-      .then(setRequest)
-      .catch((err: Error) => setError(err.message))
-      .finally(() => setLoading(false))
+    async function load() {
+      try {
+        const data = await fetchRequest(id)
+        setRequest(data)
+      } catch (err) {
+        const message = err instanceof Error ? err.message : "Failed to load request"
+        setError(message)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    load()
   }, [id])
 
   if (loading) {
@@ -59,7 +72,7 @@ export default function RequestPage() {
   }
 
   if (error) {
-    return <div className="p-4 text-red-500">{error}</div>
+    return <RequestError message={error} />
   }
 
   if (!request) {
