@@ -1,7 +1,4 @@
-"use client"
-
-import { useEffect, useState } from "react"
-import { useParams } from "next/navigation"
+import { notFound } from "next/navigation"
 
 import type { DesignRequest } from "@/types"
 
@@ -41,29 +38,19 @@ async function fetchRequest(id: string): Promise<DesignRequest> {
   return request
 }
 
-export default function RequestPage() {
-  const { id } = useParams<{ id: string }>()
-  const [request, setRequest] = useState<DesignRequest | null>(null)
-  const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(true)
+export async function generateStaticParams() {
+  return Object.keys(mockRequests).map((id) => ({ id }))
+}
 
-  useEffect(() => {
-    fetchRequest(id)
-      .then(setRequest)
-      .catch((err: Error) => setError(err.message))
-      .finally(() => setLoading(false))
-  }, [id])
-
-  if (loading) {
-    return <div className="p-4">Loading...</div>
-  }
-
-  if (error) {
-    return <div className="p-4 text-red-500">{error}</div>
-  }
+export default async function RequestPage({
+  params,
+}: {
+  params: { id: string }
+}) {
+  const request = await fetchRequest(params.id).catch(() => null)
 
   if (!request) {
-    return <div className="p-4">No request found.</div>
+    notFound()
   }
 
   return (
