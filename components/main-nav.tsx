@@ -21,12 +21,12 @@ export function MainNav({ userRole }: MainNavProps) {
   const isDesigner = userRole === "designer"
 
   const navItems = [
-    ...(isClient 
+    ...(isClient
       ? [
           { name: "Dashboard", href: "/client/dashboard" },
           { name: "New Request", href: "/client/new-request" },
           { name: "My Requests", href: "/client/requests" },
-        ] 
+        ]
       : []),
     ...(isDesigner
       ? [
@@ -35,8 +35,8 @@ export function MainNav({ userRole }: MainNavProps) {
           { name: "My Work", href: "/designer/my-work" },
         ]
       : []),
-    { name: "Account", href: `/${userRole}/account` },
-  ]
+    ...(userRole ? [{ name: "Account", href: `/${userRole}/account` }] : []),
+  ] satisfies Array<{ name: string; href: string }>
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
