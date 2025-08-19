@@ -53,24 +53,12 @@ import {
 import { cn } from "@/lib/utils"
 import { useToast } from "@/hooks/use-toast"
 import { ThermometerDisplay } from "@/components/thermometer-display"
-import { RequestCategory } from "@/types"
-
-const requestCategories: RequestCategory[] = [
-  "Logo Design",
-  "Web Design",
-  "Social Media Graphics",
-  "Print Design",
-  "Brand Identity",
-  "UI/UX Design",
-  "Illustrations",
-  "Packaging Design",
-  "Other"
-];
+import { requestCategories } from "@/types/categories"
 
 const formSchema = z.object({
   title: z.string().min(4, { message: "Title must be at least 4 characters" }).max(100),
   description: z.string().min(10, { message: "Description must be at least 10 characters" }),
-  category: z.enum(requestCategories as [RequestCategory, ...RequestCategory[]]),
+  category: z.enum(requestCategories),
   deadline: z.date().min(new Date(), { message: "Deadline must be in the future" }),
   priority: z.enum(["low", "medium", "high", "urgent"])
 });
@@ -302,7 +290,7 @@ export default function NewRequestPage() {
                   <div>
                     <p className="font-medium mb-1">Your request volume is high</p>
                     <p className="text-xs">
-                      You've submitted several requests recently. You may experience slightly longer turnaround times.
+                      You&#39;ve submitted several requests recently. You may experience slightly longer turnaround times.
                     </p>
                   </div>
                 </div>
