@@ -1,13 +1,6 @@
-export type RequestCategory = 
-  | "Logo Design"
-  | "Web Design"
-  | "Social Media Graphics"
-  | "Print Design"
-  | "Brand Identity"
-  | "UI/UX Design"
-  | "Illustrations"
-  | "Packaging Design"
-  | "Other";
+import type { RequestCategory } from "./categories";
+
+export type { RequestCategory } from "./categories";
 
 export type RequestStatus = 
   | "pending"

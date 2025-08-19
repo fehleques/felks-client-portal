@@ -35,7 +35,8 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
-import { DesignRequest, RequestCategory } from "@/types"
+import { DesignRequest } from "@/types"
+import { requestCategories as categories } from "@/types/categories"
 
 // Mock data
 const availableRequests: DesignRequest[] = [
@@ -101,17 +102,6 @@ const availableRequests: DesignRequest[] = [
   }
 ];
 
-const categories: RequestCategory[] = [
-  "Logo Design",
-  "Web Design",
-  "Social Media Graphics",
-  "Print Design",
-  "Brand Identity",
-  "UI/UX Design",
-  "Illustrations",
-  "Packaging Design",
-  "Other"
-];
 
 export default function DesignerRequestsPage() {
   const router = useRouter()
