@@ -1,8 +1,3 @@
-"use client"
-
-import { useEffect, useState } from "react"
-import { useParams } from "next/navigation"
-
 import type { DesignRequest } from "@/types"
 
 const mockRequests: Record<string, DesignRequest> = {
@@ -32,7 +27,11 @@ const mockRequests: Record<string, DesignRequest> = {
   },
 }
 
-export async function fetchRequest(id: string): Promise<DesignRequest> {
+export function generateStaticParams() {
+  return Object.keys(mockRequests).map((id) => ({ id }))
+}
+
+async function fetchRequest(id: string): Promise<DesignRequest> {
   await new Promise((resolve) => setTimeout(resolve, 300))
   const request = mockRequests[id]
   if (!request) {
@@ -45,54 +44,32 @@ function RequestError({ message }: { message: string }) {
   return <div className="p-4 text-red-500">{message}</div>
 }
 
-export default function RequestPage() {
-  const { id } = useParams<{ id: string }>()
-  const [request, setRequest] = useState<DesignRequest | null>(null)
-  const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    async function load() {
-      try {
-        const data = await fetchRequest(id)
-        setRequest(data)
-      } catch (err) {
-        const message = err instanceof Error ? err.message : "Failed to load request"
-        setError(message)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    load()
-  }, [id])
-
-  if (loading) {
-    return <div className="p-4">Loading...</div>
-  }
-
-  if (error) {
-    return <RequestError message={error} />
-  }
-
-  if (!request) {
-    return <div className="p-4">No request found.</div>
-  }
-
-  return (
-    <div className="p-6 space-y-4">
-      <div>
-        <h1 className="text-2xl font-bold">{request.title}</h1>
-        <p className="text-sm text-muted-foreground">ID: {request.id}</p>
+export default async function RequestPage({
+  params,
+}: {
+  params: { id: string }
+}) {
+  try {
+    const request = await fetchRequest(params.id)
+    return (
+      <div className="p-6 space-y-4">
+        <div>
+          <h1 className="text-2xl font-bold">{request.title}</h1>
+          <p className="text-sm text-muted-foreground">ID: {request.id}</p>
+        </div>
+        <p className="text-muted-foreground">{request.description}</p>
+        <div className="text-sm text-muted-foreground space-y-1">
+          <p>Category: {request.category}</p>
+          <p>Priority: {request.priority}</p>
+          <p>Status: {request.status}</p>
+          <p>Deadline: {new Date(request.deadline).toLocaleDateString()}</p>
+        </div>
       </div>
-      <p className="text-muted-foreground">{request.description}</p>
-      <div className="text-sm text-muted-foreground space-y-1">
-        <p>Category: {request.category}</p>
-        <p>Priority: {request.priority}</p>
-        <p>Status: {request.status}</p>
-        <p>Deadline: {new Date(request.deadline).toLocaleDateString()}</p>
-      </div>
-    </div>
-  )
+    )
+  } catch (err) {
+    const message =
+      err instanceof Error ? err.message : "Failed to load request"
+    return <RequestError message={message} />
+  }
 }
 
